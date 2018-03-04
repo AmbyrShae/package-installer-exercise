@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "outDir": "./../out-tsc",
+        "removeComments": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ]
+    }
+}
