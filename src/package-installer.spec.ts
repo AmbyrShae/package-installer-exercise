@@ -2,14 +2,17 @@ import { PackageInstaller } from './package-installer';
 import { expect } from 'chai';
 import 'mocha';
 
-const packageInstaller = new PackageInstaller;
-let input: string[]; 
+let packageInstaller: PackageInstaller;
+let input: string[];
+let output: string;
 
 /**
- * Clear input before running each test
+ * Clear input/output before running each test
  */
 beforeEach(() => {
-    input = [];
+    packageInstaller = new PackageInstaller;
+    input = []; 
+    output = '';
 });
 
 // Test Suite 1
@@ -25,7 +28,7 @@ describe('Recognize packages that do not have dependencies', () => {
                     "KittenService: CamelCaser", 
                     "CamelCaser: " 
                 ];
-        const output = packageInstaller.installPackages(input);
+        output = packageInstaller.installPackages(input);
         expect(output).to.equal('CamelCaser');
     });
 
@@ -36,8 +39,8 @@ describe('Recognize packages that do not have dependencies', () => {
                     "CamelCaser: KittenService",
                     "Ice: " 
                 ];
-        const output = packageInstaller.installPackages(input);
-        expect(output).to.equal('KittenService, Ice');
+        output = packageInstaller.installPackages(input);
+        expect(output).to.equal('KittenService,Ice');
     });
   });
 

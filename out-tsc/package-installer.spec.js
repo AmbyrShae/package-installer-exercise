@@ -3,11 +3,13 @@ exports.__esModule = true;
 var package_installer_1 = require("./package-installer");
 var chai_1 = require("chai");
 require("mocha");
-var packageInstaller = new package_installer_1.PackageInstaller;
+var packageInstaller;
 var input;
+var output;
 beforeEach(function () {
+    packageInstaller = new package_installer_1.PackageInstaller;
     input = [];
-    console.log('before test ' + input);
+    output = '';
 });
 describe('Recognize packages that do not have dependencies', function () {
     it('should install non-dependent packages first', function () {
@@ -15,7 +17,7 @@ describe('Recognize packages that do not have dependencies', function () {
             "KittenService: CamelCaser",
             "CamelCaser: "
         ];
-        var output = packageInstaller.installPackages(input);
+        output = packageInstaller.installPackages(input);
         chai_1.expect(output).to.equal('CamelCaser');
     });
     it('should install non-dependent packages first', function () {
@@ -25,7 +27,7 @@ describe('Recognize packages that do not have dependencies', function () {
             "CamelCaser: KittenService",
             "Ice: "
         ];
-        var output = packageInstaller.installPackages(input);
-        chai_1.expect(output).to.equal('KittenService, Ice');
+        output = packageInstaller.installPackages(input);
+        chai_1.expect(output).to.equal('KittenService,Ice');
     });
 });

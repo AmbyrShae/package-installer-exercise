@@ -1,18 +1,25 @@
 export class PackageInstaller { 
 
-    nonDependentPtn = new RegExp(/(\w+:(?!\s))|(\w+:\s(?!\w))/);
-    output: string = '';
+    nonDependentPtn: RegExp;
+    output: string;
 
     constructor(){
-        // empty...for now
+        // note: exercise states a space will always follow the package name, even if no dependency present
+        this.nonDependentPtn = new RegExp(/\w+:\s(?!\w)/);
+        this.output = '';
     }
 
     installPackages(input: string[]) : string {
+
+        let tempArray = [];
+
         input.forEach(item => {
+
             if (this.nonDependentPtn.test(item)) {
-                console.log(item + ' does not have dependcies.')
-                this.output.concat(item);
+                tempArray.push(item.match(/\w*/)); // removes : char
             }
+            
+            this.output = tempArray.join();
         });
 
         return this.output;
