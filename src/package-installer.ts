@@ -14,11 +14,11 @@ export class PackageInstaller {
         let tempArray = [];
 
         input.forEach(item => {
-
+            // check for non-dependent packages
             if (this.nonDependentPtn.test(item)) {
                 tempArray.push(item.match(/\w*/)); // removes : char
             }
-            
+
             this.output = tempArray.join();
         });
 
