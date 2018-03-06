@@ -15,80 +15,79 @@ beforeEach(() => {
     output = '';
 });
 
-// Test Suite 1
-describe('Recognize packages that do not have dependencies', () => {
+// Test Suite 
+describe('Install packages in correct order', () => {
 
     /** 
-     * List out non-dependent packages in the order in which
+     * Test 1:
+     * Return output of non-dependent packages in the order in which
      * they are iterated through the array starting @ index 0
      */
 
-    it('should install non-dependent packages first', () => {
+    it('Nondependent packages', () => {
         input = [
-                    "KittenService: CamelCaser", 
-                    "CamelCaser: " 
+                    "KittenService: ", 
+                    "CamelCaser: " ,
+                    "Ice: "
                 ];
         output = packageInstaller.installPackages(input);
-        expect(output).to.equal('CamelCaser');
+        expect(output).to.equal('KittenService, CamelCaser, Ice');
     });
-
-    it('should install non-dependent packages first', () => {
-        input = [ 
-                    "KittenService: ",
-                    "Cyberportal: Ice",
-                    "CamelCaser: KittenService",
-                    "Ice: " 
-                ];
-        output = packageInstaller.installPackages(input);
-        expect(output).to.equal('KittenService,Ice');
-    });
-  });
-
-// Test Suite 2
-describe('Recognize packages that have dependencies', () => {
 
     /** 
-     * List out dependent packages in the order in which
+     * Test 2:
+     * Happy case where all packages are installed in sequential order
+     * Return output of dependent packages in the order in which
      * they are iterated through the array starting @ index 0
      */
 
-    it('should install non-dependent packages first', () => {
+    it('Dependent packages in sequential order', () => {
         input = [
-                    "KittenService: CamelCaser", 
-                    "CamelCaser: " 
+                    "CamelCaser: ",        
+                    "KittenService: CamelCaser",
+                    "Ice: KittenService"    
                 ];
         output = packageInstaller.installPackages(input);
-        expect(output).to.equal('KittenService');
+        expect(output).to.equal('CamelCaser, KittenService, Ice');
     });
 
-    it('should install non-dependent packages first', () => {
-        input = [ 
+    /**
+     * Test 3:
+     * Dependencies are scattered within input
+     * Return output of dependent packages in the order in which
+     * they are iterated through the array starting @ index 0
+     */
+
+    it('Dependent packages in random order', () => {
+        input = [
                     "KittenService: ",
+                    "Leetmeme: Cyberportal",
                     "Cyberportal: Ice",
                     "CamelCaser: KittenService",
-                    "Ice: " 
+                    "Fraudstream: Leetmeme",
+                    "Ice: "    
                 ];
         output = packageInstaller.installPackages(input);
-        expect(output).to.equal('Cyberportal,CamelCaser');
+        // expect(output).to.equal('KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream');
     });
-  });
 
-  // Test Suite 3? 
-  // Install all packages in correct order
 
-  // Test Suite 4?
-describe('Recognize invalid input', () => {
+     /**
+     * Test 4:
+     * Invalid input
+     * Throw error due to input containing cycle
+     */
 
-    it('Rejects input because it contains a cycle', () => {
+    it('Input contains cycle', () => {
         input = [
                     "KittenService: ",
                     "Leetmeme: Cyberportal",
                     "Cyberportal: Ice",
                     "CamelCaser: KittenService",
                     "Fraudstream: ",
-                    "Ice: Leetmeme" 
+                    "Ice: Leetmeme"    
                 ];
         // output = packageInstaller.installPackages(input);
-        // expect(output).to.equal('KittenService');
     });
+    
   });

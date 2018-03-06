@@ -11,48 +11,37 @@ beforeEach(function () {
     input = [];
     output = '';
 });
-describe('Recognize packages that do not have dependencies', function () {
-    it('should install non-dependent packages first', function () {
-        input = [
-            "KittenService: CamelCaser",
-            "CamelCaser: "
-        ];
-        output = packageInstaller.installPackages(input);
-        chai_1.expect(output).to.equal('CamelCaser');
-    });
-    it('should install non-dependent packages first', function () {
+describe('Install packages in correct order', function () {
+    it('Nondependent packages', function () {
         input = [
             "KittenService: ",
-            "Cyberportal: Ice",
-            "CamelCaser: KittenService",
+            "CamelCaser: ",
             "Ice: "
         ];
         output = packageInstaller.installPackages(input);
-        chai_1.expect(output).to.equal('KittenService,Ice');
+        chai_1.expect(output).to.equal('KittenService, CamelCaser, Ice');
     });
-});
-describe('Recognize packages that have dependencies', function () {
-    it('should install non-dependent packages first', function () {
+    it('Dependent packages in sequential order', function () {
         input = [
+            "CamelCaser: ",
             "KittenService: CamelCaser",
-            "CamelCaser: "
+            "Ice: KittenService"
         ];
         output = packageInstaller.installPackages(input);
-        chai_1.expect(output).to.equal('KittenService');
+        chai_1.expect(output).to.equal('CamelCaser, KittenService, Ice');
     });
-    it('should install non-dependent packages first', function () {
+    it('Dependent packages in random order', function () {
         input = [
             "KittenService: ",
+            "Leetmeme: Cyberportal",
             "Cyberportal: Ice",
             "CamelCaser: KittenService",
+            "Fraudstream: Leetmeme",
             "Ice: "
         ];
         output = packageInstaller.installPackages(input);
-        chai_1.expect(output).to.equal('Cyberportal,CamelCaser');
     });
-});
-describe('Recognize invalid input', function () {
-    it('Rejects input because it contains a cycle', function () {
+    it('Input contains cycle', function () {
         input = [
             "KittenService: ",
             "Leetmeme: Cyberportal",
