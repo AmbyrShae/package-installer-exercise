@@ -57,7 +57,7 @@ describe('Install packages in correct order', function () {
         output = packageInstaller.installPackages();
         chai_1.expect(output).to.equal('Ice, Cyberportal, Leetmeme, Fraudstream, KittenService, CamelCaser');
     });
-    xit('Input contains cycle', function () {
+    it('Input contains cycle', function () {
         input = [
             "KittenService: ",
             "Leetmeme: Cyberportal",
@@ -67,5 +67,19 @@ describe('Install packages in correct order', function () {
             "Ice: Leetmeme"
         ];
         packageInstaller = new package_installer_1.PackageInstaller(input);
+        output = packageInstaller.installPackages();
+        chai_1.expect(output).to.equal('Input is invalid due to cycle.');
+    });
+    xit('Missing package', function () {
+        input = [
+            "Fraudstream: Leetmeme",
+            "Leetmeme: Cyberportal",
+            "Cyberportal: Ice",
+            "CamelCaser: KittenService",
+            "Ice: "
+        ];
+        packageInstaller = new package_installer_1.PackageInstaller(input);
+        output = packageInstaller.installPackages();
+        chai_1.expect(output).to.equal('Ice, Cyberportal, Leetmeme, Fraudstream');
     });
 });

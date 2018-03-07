@@ -11,13 +11,18 @@ var PackageInstaller = (function () {
     }
     PackageInstaller.prototype.installPackages = function () {
         var _this = this;
-        this.inputArr.forEach(function (inputItem) {
-            var vPackage = _this.getPackageTypeAndName(inputItem);
-            if (!_this.isInstalled(vPackage.name)) {
-                _this.addPackageNameToOutput(vPackage, inputItem);
-            }
-        });
-        return this.outputArr.join(', ');
+        if (this.isInputValid()) {
+            this.inputArr.forEach(function (inputItem) {
+                var vPackage = _this.getPackageTypeAndName(inputItem);
+                if (!_this.isInstalled(vPackage.name)) {
+                    _this.addPackageNameToOutput(vPackage, inputItem);
+                }
+            });
+            return this.outputArr.join(', ');
+        }
+        else {
+            return 'Input is invalid due to cycle.';
+        }
     };
     PackageInstaller.prototype.addPackageNameToOutput = function (vPackage, inputItem) {
         if (vPackage.type === 'parent') {
@@ -51,14 +56,56 @@ var PackageInstaller = (function () {
         }
     };
     PackageInstaller.prototype.findPackage = function (packageName) {
-        var vPackage = { type: '', name: '' };
-        for (var _i = 0, _a = this.inputArr; _i < _a.length; _i++) {
-            var inputItem = _a[_i];
-            vPackage = this.getPackageTypeAndName(inputItem);
-            if (packageName === vPackage.name) {
-                return inputItem;
+        if (packageName !== null) {
+            var vPackage = { type: '', name: '' };
+            for (var _i = 0, _a = this.inputArr; _i < _a.length; _i++) {
+                var inputItem = _a[_i];
+                vPackage = this.getPackageTypeAndName(inputItem);
+                if (packageName === vPackage.name) {
+                    return inputItem;
+                }
             }
         }
+        else {
+            return null;
+        }
+    };
+    PackageInstaller.prototype.isInputValid = function () {
+        var isValid = true;
+        var p1, p2, p1Input, p2Input;
+        for (var _i = 0, _a = this.inputArr; _i < _a.length; _i++) {
+            var inputItem = _a[_i];
+            var vPackage = this.getPackageTypeAndName(inputItem);
+            if (vPackage.type === 'parent') {
+                p1 = p2 = vPackage;
+                p1Input = p2Input = inputItem;
+                while (isValid && p2 !== null && this.moveP(1, this.findPackage(p2.name), p2) !== null) {
+                    p1Input = this.findPackage(p1.name);
+                    p1 = this.moveP(1, p1Input, p1);
+                    p2Input = this.findPackage(p2.name);
+                    p2 = this.moveP(2, p2Input, p2);
+                    if (p1 !== null && p2 !== null && p1.name === p2.name) {
+                        isValid = false;
+                    }
+                }
+            }
+        }
+        return isValid;
+    };
+    PackageInstaller.prototype.moveP = function (moves, input, vPackage) {
+        while (moves > 0) {
+            if (vPackage !== null && vPackage.type === 'parent') {
+                var dependency = input.match(this.dependencyPtn).toString().match(this.wordPtn).toString();
+                input = this.findPackage(dependency);
+                vPackage = this.getPackageTypeAndName(input);
+                moves--;
+            }
+            else {
+                vPackage = null;
+                moves--;
+            }
+        }
+        return vPackage;
     };
     return PackageInstaller;
 }());

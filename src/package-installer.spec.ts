@@ -87,14 +87,12 @@ describe('Install packages in correct order', () => {
         expect(output).to.equal('Ice, Cyberportal, Leetmeme, Fraudstream, KittenService, CamelCaser');
     });
 
-
      /**
      * Test 4:
      * Invalid input
-     * Throw error due to input containing cycle
      */
 
-    xit('Input contains cycle', () => {
+    it('Input contains cycle', () => {
         input = [
                     "KittenService: ",
                     "Leetmeme: Cyberportal",
@@ -104,7 +102,23 @@ describe('Install packages in correct order', () => {
                     "Ice: Leetmeme"    
                 ];
         packageInstaller = new PackageInstaller(input);
-        // output = packageInstaller.installPackages();
+        output = packageInstaller.installPackages();
+        expect(output).to.equal('Input is invalid due to cycle.');
+    });
+
+    // Not actually part of the coding exercise, but find this test case interesting
+    // As of now, the code assumes that all packages WILL be found in the input
+    xit('Missing package', () => {
+        input = [
+                    "Fraudstream: Leetmeme",
+                    "Leetmeme: Cyberportal",
+                    "Cyberportal: Ice",
+                    "CamelCaser: KittenService",
+                    "Ice: "    
+                ];
+        packageInstaller = new PackageInstaller(input);
+        output = packageInstaller.installPackages();
+        expect(output).to.equal('Ice, Cyberportal, Leetmeme, Fraudstream');
     });
     
   });
