@@ -44,6 +44,19 @@ describe('Install packages in correct order', function () {
         output = packageInstaller.installPackages();
         chai_1.expect(output).to.equal('KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream');
     });
+    it('Dependent packages in random order 2', function () {
+        input = [
+            "Fraudstream: Leetmeme",
+            "Leetmeme: Cyberportal",
+            "Cyberportal: Ice",
+            "CamelCaser: KittenService",
+            "KittenService: ",
+            "Ice: "
+        ];
+        packageInstaller = new package_installer_1.PackageInstaller(input);
+        output = packageInstaller.installPackages();
+        chai_1.expect(output).to.equal('Ice, Cyberportal, Leetmeme, Fraudstream, KittenService, CamelCaser');
+    });
     xit('Input contains cycle', function () {
         input = [
             "KittenService: ",

@@ -73,6 +73,20 @@ describe('Install packages in correct order', () => {
         expect(output).to.equal('KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream');
     });
 
+    it('Dependent packages in random order 2', () => {
+        input = [
+                    "Fraudstream: Leetmeme",
+                    "Leetmeme: Cyberportal",
+                    "Cyberportal: Ice",
+                    "CamelCaser: KittenService",
+                    "KittenService: ",
+                    "Ice: "    
+                ];
+        packageInstaller = new PackageInstaller(input);
+        output = packageInstaller.installPackages();
+        expect(output).to.equal('Ice, Cyberportal, Leetmeme, Fraudstream, KittenService, CamelCaser');
+    });
+
 
      /**
      * Test 4:
