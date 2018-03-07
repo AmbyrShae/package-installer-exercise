@@ -4,46 +4,91 @@ export class PackageInstaller {
     parentPtn: RegExp;
     dependencyPtn: RegExp;
     wordPtn: RegExp;
-    tempArr: string[];
+    inputArr: string[];
+    outputArr: string[];
 
-    constructor(){
-        // note: exercise states a space will always follow the package name, even if no dependency present
+    constructor(input: string[]) {
+        // note: exercise states a space will follow the package name, even if no dependency present
         this.nonDependentPtn = new RegExp(/\w+:\s(?!\w)/);
         this.parentPtn = new RegExp(/\w+:\s(?=\w)/);
         this.dependencyPtn = new RegExp(/\s\w+/);
-        this.wordPtn = new RegExp(/\w+/);
-        this.tempArr = [];
+        this.wordPtn = new RegExp(/\w+/); // removes : char
+        this.inputArr = input;
+        this.outputArr = [];
     }
 
-    installPackages(input: string[]) : string {
-
-        input.forEach(inputItem => {
-            this.findPackages(inputItem);
+    installPackages() : string {
+        // loop through input
+        this.inputArr.forEach(inputItem => {
+            // get package type and name
+            let vPackage = this.getPackageTypeAndName(inputItem);
+            // check if package is already installed
+            if (!this.isInstalled(vPackage.name)){
+                // install package
+                this.addPackageNameToOutput(vPackage, inputItem);
+            }
         });
-
-        return this.tempArr.join(', ');
+        // return output as comma-separated string
+        return this.outputArr.join(', ');
     }
 
-    findPackages(inputItem: string) : void {
-        // base case: it's non-dependent
-        if (this.nonDependentPtn.test(inputItem)) {
-            this.tempArr.push(inputItem.match(this.wordPtn).toString()); // removes : char
+    /**
+     * helper functions --------------------------------------------
+     */
+
+    // adds package names to output
+    addPackageNameToOutput(vPackage: any, inputItem: string) : void {
+        // package has a dependency
+        if (vPackage.type === 'parent') {
+            let dependency = inputItem.match(this.dependencyPtn).toString().match(this.wordPtn).toString();
+            // if dependency is not installed, call addPackageNameToOutput() to install it
+            if (!this.isInstalled(dependency)) {
+                let dependencyInput = this.findPackage(dependency);
+                let dependencyPackage = this.getPackageTypeAndName(dependencyInput)
+                this.addPackageNameToOutput(dependencyPackage, dependencyInput);
+            }
+        } 
+        // add package name to output    
+        this.outputArr.push(vPackage.name);
+    }
+
+    // creates package object for greater readibility  
+    getPackageTypeAndName(inputItem: string) : any {
+
+        let vPackage = {type: '', name: ''};
+
+        if(this.nonDependentPtn.test(inputItem)) {
+            vPackage.type = 'nondependent';
+            vPackage.name = inputItem.match(this.wordPtn).toString();
+        }
+        else {
+            vPackage.type = 'parent';
+            vPackage.name = inputItem.match(this.parentPtn).toString().match(this.wordPtn).toString();
+        }
+
+        return vPackage;
+    }
+
+    // checks to see if package name already in output
+    isInstalled(packageName: string) : boolean {
+        if(this.outputArr.indexOf(packageName) > -1) {
+            return true;
         } else {
-            // else, find the dependency and check if is already installed
-            this.isInstalled(inputItem) 
+            return false;
         }
     }
 
-    isInstalled(inputItem: string) : void {
+    // finds package information in the input
+    // assumes packageName will be found in the input
+    findPackage(packageName: string) : string {
 
-        const parent = inputItem.match(this.parentPtn).toString();
-        const dependency = inputItem.match(this.dependencyPtn).toString();
+        let vPackage = {type: '', name: ''}; 
 
-        // if the dependency is already installed, then install parent
-        if (this.tempArr.indexOf(dependency.match(this.wordPtn).toString()) > -1) {
-            this.tempArr.push(parent.match(this.wordPtn).toString());
-        } else {
-            // else, find the dependency in this.input and call findPackages()
+        for (let inputItem of this.inputArr) {
+            vPackage = this.getPackageTypeAndName(inputItem)
+            if (packageName === vPackage.name) {
+                return inputItem;
+            }
         }
     }
 }

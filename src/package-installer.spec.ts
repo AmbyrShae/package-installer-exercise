@@ -10,7 +10,6 @@ let output: string;
  * Clear input/output before running each test
  */
 beforeEach(() => {
-    packageInstaller = new PackageInstaller;
     input = []; 
     output = '';
 });
@@ -30,7 +29,8 @@ describe('Install packages in correct order', () => {
                     "CamelCaser: " ,
                     "Ice: "
                 ];
-        output = packageInstaller.installPackages(input);
+        packageInstaller = new PackageInstaller(input);
+        output = packageInstaller.installPackages();
         expect(output).to.equal('KittenService, CamelCaser, Ice');
     });
 
@@ -47,7 +47,8 @@ describe('Install packages in correct order', () => {
                     "KittenService: CamelCaser",
                     "Ice: KittenService"    
                 ];
-        output = packageInstaller.installPackages(input);
+        packageInstaller = new PackageInstaller(input);
+        output = packageInstaller.installPackages();
         expect(output).to.equal('CamelCaser, KittenService, Ice');
     });
 
@@ -67,8 +68,9 @@ describe('Install packages in correct order', () => {
                     "Fraudstream: Leetmeme",
                     "Ice: "    
                 ];
-        output = packageInstaller.installPackages(input);
-        // expect(output).to.equal('KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream');
+        packageInstaller = new PackageInstaller(input);
+        output = packageInstaller.installPackages();
+        expect(output).to.equal('KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream');
     });
 
 
@@ -78,7 +80,7 @@ describe('Install packages in correct order', () => {
      * Throw error due to input containing cycle
      */
 
-    it('Input contains cycle', () => {
+    xit('Input contains cycle', () => {
         input = [
                     "KittenService: ",
                     "Leetmeme: Cyberportal",
@@ -87,7 +89,8 @@ describe('Install packages in correct order', () => {
                     "Fraudstream: ",
                     "Ice: Leetmeme"    
                 ];
-        // output = packageInstaller.installPackages(input);
+        packageInstaller = new PackageInstaller(input);
+        // output = packageInstaller.installPackages();
     });
     
   });

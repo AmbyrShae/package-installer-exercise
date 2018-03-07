@@ -7,7 +7,6 @@ var packageInstaller;
 var input;
 var output;
 beforeEach(function () {
-    packageInstaller = new package_installer_1.PackageInstaller;
     input = [];
     output = '';
 });
@@ -18,7 +17,8 @@ describe('Install packages in correct order', function () {
             "CamelCaser: ",
             "Ice: "
         ];
-        output = packageInstaller.installPackages(input);
+        packageInstaller = new package_installer_1.PackageInstaller(input);
+        output = packageInstaller.installPackages();
         chai_1.expect(output).to.equal('KittenService, CamelCaser, Ice');
     });
     it('Dependent packages in sequential order', function () {
@@ -27,7 +27,8 @@ describe('Install packages in correct order', function () {
             "KittenService: CamelCaser",
             "Ice: KittenService"
         ];
-        output = packageInstaller.installPackages(input);
+        packageInstaller = new package_installer_1.PackageInstaller(input);
+        output = packageInstaller.installPackages();
         chai_1.expect(output).to.equal('CamelCaser, KittenService, Ice');
     });
     it('Dependent packages in random order', function () {
@@ -39,9 +40,11 @@ describe('Install packages in correct order', function () {
             "Fraudstream: Leetmeme",
             "Ice: "
         ];
-        output = packageInstaller.installPackages(input);
+        packageInstaller = new package_installer_1.PackageInstaller(input);
+        output = packageInstaller.installPackages();
+        chai_1.expect(output).to.equal('KittenService, Ice, Cyberportal, Leetmeme, CamelCaser, Fraudstream');
     });
-    it('Input contains cycle', function () {
+    xit('Input contains cycle', function () {
         input = [
             "KittenService: ",
             "Leetmeme: Cyberportal",
@@ -50,5 +53,6 @@ describe('Install packages in correct order', function () {
             "Fraudstream: ",
             "Ice: Leetmeme"
         ];
+        packageInstaller = new package_installer_1.PackageInstaller(input);
     });
 });
