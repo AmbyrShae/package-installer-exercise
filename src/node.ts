@@ -9,24 +9,12 @@ export class Node {
         this.previous = null;
     }
 
-    getData() : string {
-        return this.data;
-    }
-
     setData(value: string) {
         this.data = value;
     }
 
-    getNext() : Node {
-        return this.next;
-    }
-
     setNext(value: Node) {
         this.next = value;
-    }
-
-    getPrevious() : Node {
-        return this.previous;
     }
 
     setPrevious(value: Node) {
