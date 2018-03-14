@@ -23,13 +23,9 @@ export class EnhancedPackageInstaller {
         if (inputItem === null) {
             console.log('ERR: Package not found.')
         } else {
-            // console.log('inputItem: ' + inputItem);
-
             let vData: string = inputItem.match(/\w+:/).toString().match(/\w+/).toString();
             let vNode: Node = new Node(vData);
             let dependency: any = inputItem.match(/:\s\w+/);
-
-            // console.log('data: ' + vNode.data);
 
             // check if package is installed
             if (!this.isInstalled(vNode.data)) {
@@ -39,9 +35,6 @@ export class EnhancedPackageInstaller {
                     let childNode: Node = new Node(dependency.toString().match(/\w+/).toString());
                     vNode.setNext(childNode);
                     childNode.setPrevious(vNode);
-
-                    // console.log('next: ' + vNode.next.data);
-                    // console.log('prev: ' + childNode.previous.data);
 
                     // check if dependency is installed
                     if (!this.isInstalled(childNode.data)) {
@@ -56,6 +49,7 @@ export class EnhancedPackageInstaller {
         } 
     }
 
+    // checks to see if package name already in output
     isInstalled(packageName: string) : boolean {
         if(this.outputArr.indexOf(packageName) > -1) {
             return true;
@@ -64,8 +58,8 @@ export class EnhancedPackageInstaller {
         }
     }
 
+    // finds package information in inputArr
     findPackage(packageName: string) : string {
-
         for (let inputItem of this.inputArr) {
             let inputItemPackageName = inputItem.match(/\w+:/).toString().match(/\w+/).toString();
             if (inputItemPackageName === packageName) {

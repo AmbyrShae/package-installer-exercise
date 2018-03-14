@@ -75,5 +75,8 @@ describe('Install packages in correct order', function () {
             "CamelCaser: KittenService",
             "Ice: "
         ];
+        packageInstaller = new enhanced_package_installer_1.EnhancedPackageInstaller(input);
+        output = packageInstaller.installPackages();
+        chai_1.expect(output).to.equal('Ice, Cyberportal, Leetmeme, Fraudstream');
     });
 });
